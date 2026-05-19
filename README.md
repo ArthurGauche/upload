@@ -11,3 +11,4 @@ npm run start
 http://localhost:3000/
 cd upload
 npx nest g resource arquivo
+npm install @types/multer
