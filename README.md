@@ -12,3 +12,4 @@ http://localhost:3000/
 cd upload
 npx nest g resource arquivo
 npm install @types/multer
+http://localhost:3000/arquivo/upload
