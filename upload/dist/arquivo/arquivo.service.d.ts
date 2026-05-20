@@ -19,4 +19,7 @@ export declare class ArquivoService {
     findOne(id: number): string;
     update(id: number, updateArquivoDto: UpdateArquivoDto): string;
     remove(id: number): string;
+    removeByFilename(filename: string): {
+        message: string;
+    };
 }

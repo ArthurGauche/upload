@@ -19,6 +19,7 @@ const update_arquivo_dto_1 = require("./dto/update-arquivo.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const path_1 = require("path");
 const multer_1 = require("multer");
+const multer_exception_filter_1 = require("./multer-exception.filter");
 let ArquivoController = class ArquivoController {
     arquivoService;
     constructor(arquivoService) {
@@ -28,6 +29,7 @@ let ArquivoController = class ArquivoController {
         if (!file) {
             throw new common_1.BadRequestException('Nenhum arquivo enviado.');
         }
+        return this.arquivoService.create(file);
     }
     findAll() {
         return this.arquivoService.findAll();
@@ -38,14 +40,27 @@ let ArquivoController = class ArquivoController {
     update(id, updateArquivoDto) {
         return this.arquivoService.update(+id, updateArquivoDto);
     }
-    remove(id) {
-        return this.arquivoService.remove(+id);
+    removeByFilename(filename) {
+        return this.arquivoService.removeByFilename(filename);
     }
 };
 exports.ArquivoController = ArquivoController;
 __decorate([
     (0, common_1.Post)('upload'),
+    (0, common_1.UseFilters)(multer_exception_filter_1.MulterExceptionFilter),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
+        limits: {
+            fileSize: 5 * 1024 * 1024,
+        },
+        fileFilter: (req, file, callback) => {
+            const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/tiff', 'image/webp'];
+            const allowedExtensions = ['.jpg', '.jpeg', '.png', '.tiff'];
+            const fileExt = (0, path_1.extname)(file.originalname).toLowerCase();
+            if (!allowedMimeTypes.includes(file.mimetype) || !allowedExtensions.includes(fileExt)) {
+                return callback(new common_1.BadRequestException('Formato de arquivo não permitido. Apenas JPG, PNG e TIFF são aceitos.'), false);
+            }
+            callback(null, true);
+        },
         storage: (0, multer_1.diskStorage)({
             destination: './drive',
             filename: (req, file, callback) => {
@@ -82,12 +97,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ArquivoController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Delete)(':filename'),
+    __param(0, (0, common_1.Param)('filename')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], ArquivoController.prototype, "remove", null);
+], ArquivoController.prototype, "removeByFilename", null);
 exports.ArquivoController = ArquivoController = __decorate([
     (0, common_1.Controller)('arquivo'),
     __metadata("design:paramtypes", [arquivo_service_1.ArquivoService])

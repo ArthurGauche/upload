@@ -89,6 +89,19 @@ let ArquivoService = class ArquivoService {
     remove(id) {
         return `This action removes a #${id} arquivo`;
     }
+    removeByFilename(filename) {
+        try {
+            const filePath = `${this.pastaUpload}/${filename}`;
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+                return { message: `Arquivo ${filename} removido com sucesso` };
+            }
+            throw new common_1.BadRequestException('Arquivo não encontrado');
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('Erro ao remover arquivo: ' + error.message);
+        }
+    }
 };
 exports.ArquivoService = ArquivoService;
 exports.ArquivoService = ArquivoService = __decorate([

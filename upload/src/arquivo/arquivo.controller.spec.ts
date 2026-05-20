@@ -3,7 +3,7 @@ import { ArquivoController } from './arquivo.controller';
 import { ArquivoService } from './arquivo.service';
 
 describe('ArquivoController', () => {
-  let controller: ArquivoController;
+  let arquivoController: ArquivoController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -11,10 +11,12 @@ describe('ArquivoController', () => {
       providers: [ArquivoService],
     }).compile();
 
-    controller = module.get<ArquivoController>(ArquivoController);
+    arquivoController = module.get<ArquivoController>(ArquivoController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  describe('findAll', () => {
+    it('should return files list', () => {
+      expect(arquivoController.findAll()).toBeDefined();
+    });
   });
 });
